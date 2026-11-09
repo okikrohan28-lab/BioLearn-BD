@@ -126,12 +126,7 @@ export const ManageChaptersPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs px-2 py-0.5 rounded bg-teal-950 text-teal-400 border border-teal-800">
-              Deliverable 2.2
-            </span>
-            <h1 className="text-2xl font-bold text-white">Manage Chapters</h1>
-          </div>
+          <h1 className="text-2xl font-bold text-white">Manage Chapters</h1>
           <p className="text-xs text-slate-400 mt-1">
             Maintain chapters under each Biology paper with enforced unique chapter numbers.
           </p>

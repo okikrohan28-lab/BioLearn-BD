@@ -94,35 +94,35 @@ export const HomePage = () => {
         </div>
       </section>
 
-      {/* Architecture Highlights */}
+      {/* Key Platform Features */}
       <section className="max-w-4xl mx-auto px-4 p-6 rounded-2xl bg-slate-900 border border-slate-800">
         <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
-          Sprint 1 Deliverables Active
+          Key Platform Features
         </h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Student Registration & Secure Bcrypt Hashing</span>
+            <span>Student Registration & Secure Authentication</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>JWT Role-Based Auth (Student vs Admin)</span>
+            <span>Role-Based Access Control (Student & Administrator)</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Student Profile Management with Ownership Check</span>
+            <span>Personalized Student Profile Management</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Admin CRUD for Biology Papers, Chapters & Topics</span>
+            <span>Administrator Curriculum Management (Papers, Chapters, Topics)</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Navigable Syllabus Catalogue (Paper &rarr; Chapter &rarr; Topic)</span>
+            <span>Hierarchical Syllabus Catalogue (Paper &rarr; Chapter &rarr; Topic)</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>Compound Unique Constraints Enforced on Server</span>
+            <span>Real-Time Topic Search and Chapter Browsing</span>
           </div>
         </div>
       </section>

@@ -100,10 +100,6 @@ export const AdminLoginPage = () => {
           {submitting ? 'Verifying Credentials...' : 'Authenticate as Admin'}
         </button>
       </form>
-
-      <div className="mt-6 text-center text-xs text-slate-500 border-t border-slate-800 pt-4">
-        Default dev seed: <code className="text-slate-400">admin@biolearnbd.com</code> / <code className="text-slate-400">Admin@123456</code>
-      </div>
     </div>
   );
 };

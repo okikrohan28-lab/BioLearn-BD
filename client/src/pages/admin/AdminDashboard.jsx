@@ -149,7 +149,7 @@ export const AdminDashboard = () => {
             <div className="text-3xl font-extrabold text-white">
               {loading ? '...' : stats.topics}
             </div>
-            <p className="text-xs text-slate-400 mt-1">Leaf nodes ready for Sprint 2 notes & quizzes</p>
+            <p className="text-xs text-slate-400 mt-1">Structured learning topics organized under chapters</p>
           </div>
           <div className="pt-2 border-t border-slate-750 flex items-center justify-between">
             <Link

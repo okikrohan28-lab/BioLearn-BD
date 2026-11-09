@@ -274,12 +274,6 @@ export const CataloguePage = () => {
                                     )}
                                   </div>
                                 </div>
-
-                                <div className="flex items-center gap-2 shrink-0">
-                                  <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                                    Sprint 2 Ready
-                                  </span>
-                                </div>
                               </div>
                             ))
                           )}

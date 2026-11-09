@@ -110,12 +110,7 @@ export const ManagePapersPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-              Deliverable 2.1
-            </span>
-            <h1 className="text-2xl font-bold text-white">Manage Biology Papers</h1>
-          </div>
+          <h1 className="text-2xl font-bold text-white">Manage Biology Papers</h1>
           <p className="text-xs text-slate-400 mt-1">
             Create, configure access levels, and maintain Biology 1st and 2nd Paper records.
           </p>
