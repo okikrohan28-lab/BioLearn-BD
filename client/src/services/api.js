@@ -1,8 +1,18 @@
 import axios from 'axios';
 
+// Automatically ensure baseURL ends with /api even if user configured only the domain
+const getBaseURL = () => {
+  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  url = url.trim().replace(/\/+$/, '');
+  if (!url.endsWith('/api')) {
+    url += '/api';
+  }
+  return url;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-  timeout: 10000,
+  baseURL: getBaseURL(),
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },

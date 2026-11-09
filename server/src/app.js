@@ -55,6 +55,14 @@ app.use('/api/chapters', chapterRoutes);
 app.use('/api/topics', topicRoutes);
 app.use('/api/catalogue', catalogueRoutes);
 
+// Route Aliases (in case client baseURL is missing the /api prefix)
+app.use('/health', healthRoutes);
+app.use('/auth', authRoutes);
+app.use('/papers', paperRoutes);
+app.use('/chapters', chapterRoutes);
+app.use('/topics', topicRoutes);
+app.use('/catalogue', catalogueRoutes);
+
 // Root path informational endpoint
 app.get('/', (req, res) => {
   res.status(200).json({
