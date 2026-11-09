@@ -1,0 +1,26 @@
+{
+  "name": "biolearn-bd",
+  "version": "1.0.0",
+  "description": "BioLearn BD - MERN Stack Biology Learning Platform",
+  "private": true,
+  "scripts": {
+    "server": "npm run dev --prefix server",
+    "server:start": "npm start --prefix server",
+    "server:seed": "npm run seed --prefix server",
+    "server:test": "npm test --prefix server",
+    "client": "npm run dev --prefix client",
+    "client:build": "npm run build --prefix client",
+    "client:lint": "npm run lint --prefix client"
+  },
+  "keywords": [
+    "mern",
+    "react",
+    "vite",
+    "nodejs",
+    "express",
+    "mongodb",
+    "biology-learning"
+  ],
+  "author": "BioLearn BD Team",
+  "license": "ISC"
+}
