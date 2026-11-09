@@ -1,6 +1,7 @@
 const app = require('./app');
 const env = require('./config/env');
 const connectDB = require('./config/db');
+const seedDatabase = require('./scripts/seed');
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
@@ -11,6 +12,9 @@ process.on('uncaughtException', (err) => {
 // Connect to MongoDB and start server
 const startServer = async () => {
   await connectDB();
+
+  // Auto-seed admin and initial syllabus if database is empty
+  await seedDatabase();
 
   const server = app.listen(env.PORT, () => {
     console.log(`🚀 BioLearn BD API server running on port ${env.PORT} in ${env.NODE_ENV} mode`);

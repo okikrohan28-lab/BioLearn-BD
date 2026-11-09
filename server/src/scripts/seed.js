@@ -5,16 +5,8 @@ const Paper = require('../models/Paper');
 const Chapter = require('../models/Chapter');
 const Topic = require('../models/Topic');
 
-const seedData = async () => {
+const seedDatabase = async () => {
   try {
-    if (!env.MONGODB_URI) {
-      console.error('MONGODB_URI not found.');
-      process.exit(1);
-    }
-
-    await mongoose.connect(env.MONGODB_URI);
-    console.log('Connected to MongoDB Atlas for seeding.');
-
     // 1. Seed Superadmin if not exists
     const adminEmail = 'admin@biolearnbd.com';
     let admin = await Admin.findOne({ email: adminEmail });
@@ -123,16 +115,30 @@ const seedData = async () => {
       ]);
 
       console.log('✅ Biology syllabus seeded successfully!');
-    } else {
-      console.log(`ℹ️ Papers already exist (${paperCount} papers). Skipping content seed.`);
     }
-
-    console.log('Seeding completed.');
-    process.exit(0);
   } catch (error) {
-    console.error('Seeding error:', error);
-    process.exit(1);
+    console.error('Seeding error:', error.message);
   }
 };
 
-seedData();
+// If run directly from CLI (npm run seed)
+if (require.main === module) {
+  (async () => {
+    try {
+      if (!env.MONGODB_URI) {
+        console.error('MONGODB_URI not found.');
+        process.exit(1);
+      }
+      await mongoose.connect(env.MONGODB_URI);
+      console.log('Connected to MongoDB Atlas for manual seeding.');
+      await seedDatabase();
+      console.log('Manual seeding completed.');
+      process.exit(0);
+    } catch (err) {
+      console.error('Manual seed failed:', err.message);
+      process.exit(1);
+    }
+  })();
+}
+
+module.exports = seedDatabase;
