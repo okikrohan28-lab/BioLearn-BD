@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { DoodleBackgroundLight } from '../../components/DoodleBackground';
 import { UserPlus, AlertCircle } from 'lucide-react';
 
 export const RegisterPage = () => {
@@ -79,115 +80,133 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto my-8 p-6 sm:p-8 bg-slate-800/60 border border-slate-700/80 rounded-2xl shadow-xl">
-      <div className="text-center mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto mb-3">
-          <UserPlus className="w-6 h-6" />
-        </div>
-        <h2 className="text-2xl font-bold text-white">Student Registration</h2>
-        <p className="text-xs text-slate-400 mt-1">
-          Create your BioLearn BD account to begin HSC Biology learning.
-        </p>
-      </div>
+    <div className="relative min-h-[85vh] py-10" style={{ backgroundColor: '#EAF3ED' }}>
+      <DoodleBackgroundLight />
 
-      {generalError && (
-        <div className="mb-4 p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />
-          <span>{generalError}</span>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1">
-            Full Name <span className="text-rose-400">*</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="e.g. Asif Rahman"
-            className="w-full px-3.5 py-2 text-sm rounded-lg bg-slate-900 border border-slate-700 focus:border-emerald-500 focus:outline-none text-white transition"
-          />
-          {errors.name && <p className="text-[11px] text-rose-400 mt-1">{errors.name}</p>}
+      <div
+        className="relative z-10 max-w-md mx-auto p-6 sm:p-8 rounded-3xl border shadow-sm"
+        style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+      >
+        <div className="text-center mb-6">
+          <div
+            className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3 text-white shadow-xs"
+            style={{ backgroundColor: '#0F766E' }}
+          >
+            <UserPlus className="w-6 h-6" />
+          </div>
+          <h2 className="text-2xl font-bold" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+            Student Registration
+          </h2>
+          <p className="text-xs mt-1" style={{ color: '#475569' }}>
+            Create your BioLearn BD account to begin HSC Biology learning.
+          </p>
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1">
-            Email Address <span className="text-rose-400">*</span>
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="student@example.com"
-            className="w-full px-3.5 py-2 text-sm rounded-lg bg-slate-900 border border-slate-700 focus:border-emerald-500 focus:outline-none text-white transition"
-          />
-          {errors.email && <p className="text-[11px] text-rose-400 mt-1">{errors.email}</p>}
+        {generalError && (
+          <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+            <span>{generalError}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+              Full Name <span className="text-rose-600">*</span>
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="e.g. Asif Rahman"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+              style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+            />
+            {errors.name && <p className="text-[11px] text-rose-600 mt-1">{errors.name}</p>}
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+              Email Address <span className="text-rose-600">*</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="student@example.com"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+              style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+            />
+            {errors.email && <p className="text-[11px] text-rose-600 mt-1">{errors.email}</p>}
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+              Phone Number <span className="text-slate-400 font-normal">(Optional)</span>
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="017xxxxxxxx"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+              style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+              Password <span className="text-rose-600">*</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="At least 6 characters"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+              style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+            />
+            {errors.password && <p className="text-[11px] text-rose-600 mt-1">{errors.password}</p>}
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+              Confirm Password <span className="text-rose-600">*</span>
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Repeat your password"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+              style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+            />
+            {errors.confirmPassword && (
+              <p className="text-[11px] text-rose-600 mt-1">{errors.confirmPassword}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full py-3 mt-2 rounded-xl text-white font-bold text-xs transition shadow-xs disabled:opacity-50 cursor-pointer hover:opacity-95"
+            style={{ backgroundColor: '#0F766E' }}
+          >
+            {submitting ? 'Creating Account...' : 'Register as Student'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-xs border-t pt-4" style={{ borderColor: '#B8D8CF', color: '#475569' }}>
+          Already have an account?{' '}
+          <Link to="/login" className="text-[#0F766E] font-bold hover:underline">
+            Log in here
+          </Link>
         </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1">
-            Phone Number <span className="text-slate-500">(Optional)</span>
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="017xxxxxxxx"
-            className="w-full px-3.5 py-2 text-sm rounded-lg bg-slate-900 border border-slate-700 focus:border-emerald-500 focus:outline-none text-white transition"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1">
-            Password <span className="text-rose-400">*</span>
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="At least 6 characters"
-            className="w-full px-3.5 py-2 text-sm rounded-lg bg-slate-900 border border-slate-700 focus:border-emerald-500 focus:outline-none text-white transition"
-          />
-          {errors.password && <p className="text-[11px] text-rose-400 mt-1">{errors.password}</p>}
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-300 mb-1">
-            Confirm Password <span className="text-rose-400">*</span>
-          </label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="Repeat your password"
-            className="w-full px-3.5 py-2 text-sm rounded-lg bg-slate-900 border border-slate-700 focus:border-emerald-500 focus:outline-none text-white transition"
-          />
-          {errors.confirmPassword && (
-            <p className="text-[11px] text-rose-400 mt-1">{errors.confirmPassword}</p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full py-2.5 mt-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition shadow-md shadow-emerald-950 disabled:opacity-50 cursor-pointer"
-        >
-          {submitting ? 'Creating Account...' : 'Register as Student'}
-        </button>
-      </form>
-
-      <div className="mt-6 text-center text-xs text-slate-400 border-t border-slate-700/60 pt-4">
-        Already have an account?{' '}
-        <Link to="/login" className="text-emerald-400 hover:underline font-medium">
-          Log in here
-        </Link>
       </div>
     </div>
   );

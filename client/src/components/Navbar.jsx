@@ -8,9 +8,8 @@ import {
   User,
   LogOut,
   ShieldAlert,
-  Layers,
-  FileText,
-  Bookmark,
+  Trophy,
+  Crown,
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -26,129 +25,141 @@ export const Navbar = () => {
   const navLinkClass = ({ isActive }) =>
     `text-sm font-medium transition px-3 py-1.5 rounded-lg ${
       isActive
-        ? 'bg-emerald-500/10 text-emerald-400 font-semibold'
-        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+        ? 'bg-[#0F766E]/10 text-[#0F766E] font-semibold'
+        : 'text-[#475569] hover:text-[#0F766E] hover:bg-[#0F766E]/5'
     }`;
 
   return (
-    <nav className="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+    <nav className="border-b border-[#B8D8CF] bg-white/95 backdrop-blur sticky top-0 z-50 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-950">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] flex items-center justify-center text-white shadow-md">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-[#0F766E] to-[#14B8A6] bg-clip-text text-transparent">
                 BioLearn BD
               </span>
-              <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/80">
-                HSC & Admission
+              <span className="hidden sm:inline-block ml-2 text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#EAF3ED] text-[#0F766E] border border-[#B8D8CF]">
+                {isAdmin ? 'Admin Console' : 'HSC & Admission'}
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-2">
-            <NavLink to="/" className={navLinkClass}>
-              Home
-            </NavLink>
-            <NavLink to="/catalogue" className={navLinkClass}>
-              Syllabus Catalogue
-            </NavLink>
-
-            {isAdmin && (
-              <>
-                <div className="h-4 w-px bg-slate-800 mx-1"></div>
-                <NavLink to="/admin" className={navLinkClass}>
-                  <span className="flex items-center gap-1.5">
-                    <ShieldAlert className="w-4 h-4 text-emerald-400" />
-                    Dashboard
-                  </span>
-                </NavLink>
-                <NavLink to="/admin/papers" className={navLinkClass}>
-                  <span className="flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5" />
-                    Papers
-                  </span>
-                </NavLink>
-                <NavLink to="/admin/chapters" className={navLinkClass}>
-                  <span className="flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5" />
-                    Chapters
-                  </span>
-                </NavLink>
-                <NavLink to="/admin/topics" className={navLinkClass}>
-                  <span className="flex items-center gap-1.5">
-                    <Bookmark className="w-3.5 h-3.5" />
-                    Topics
-                  </span>
-                </NavLink>
-              </>
-            )}
-
-            {isAuthenticated && !isAdmin && (
-              <NavLink to="/profile" className={navLinkClass}>
-                <span className="flex items-center gap-1.5">
-                  <User className="w-4 h-4" />
-                  My Profile
-                </span>
+          {isAdmin ? (
+            /* ADMIN HEADER: Exactly 5 options: Home, Dashboard, Syllabus, Premium, Logout */
+            <div className="hidden md:flex items-center gap-2">
+              <NavLink to="/" end className={navLinkClass}>
+                Home
               </NavLink>
-            )}
-          </div>
+              <NavLink to="/admin" end className={navLinkClass}>
+                Dashboard
+              </NavLink>
+              <NavLink to="/admin/papers" className={navLinkClass}>
+                Syllabus
+              </NavLink>
+              <NavLink to="/admin/premium" className={navLinkClass}>
+                Premium
+              </NavLink>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#475569] hover:text-rose-600 bg-[#F5F8F4] hover:bg-rose-50 rounded-lg border border-[#B8D8CF] hover:border-rose-200 transition cursor-pointer ml-1"
+                title="Logout"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Logout</span>
+              </button>
+            </div>
+          ) : (
+            /* STUDENT / PUBLIC HEADER */
+            <>
+              <div className="hidden md:flex items-center gap-1.5">
+                <NavLink to="/" end className={navLinkClass}>
+                  Home
+                </NavLink>
+                <NavLink to="/catalogue" className={navLinkClass}>
+                  Syllabus
+                </NavLink>
+                <NavLink to="/challenges" className={navLinkClass}>
+                  <span className="flex items-center gap-1">
+                    <Trophy className="w-3.5 h-3.5 text-[#0F766E]" />
+                    Challenges
+                  </span>
+                </NavLink>
+                <NavLink to="/premium" className={navLinkClass}>
+                  <span className="flex items-center gap-1">
+                    <Crown className="w-3.5 h-3.5 text-amber-600" />
+                    Premium
+                  </span>
+                </NavLink>
 
-          {/* Desktop Right Actions */}
-          <div className="hidden md:flex items-center gap-3">
-            {isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <div className="text-xs font-semibold text-white">
-                    {user?.name || 'User'}
-                  </div>
-                  <div className="text-[10px] text-emerald-400 capitalize">
-                    {role || 'Student'}
-                  </div>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-rose-400 bg-slate-800/80 hover:bg-rose-950/40 rounded-lg border border-slate-700/80 hover:border-rose-800/60 transition cursor-pointer"
-                  title="Logout"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  Logout
-                </button>
+                {isAuthenticated && (
+                  <NavLink to="/profile" className={navLinkClass}>
+                    <span className="flex items-center gap-1.5">
+                      <User className="w-4 h-4" />
+                      My Profile
+                    </span>
+                  </NavLink>
+                )}
               </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="px-3.5 py-1.5 text-xs font-medium text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition"
-                >
-                  Student Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-3.5 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg shadow-sm shadow-emerald-950 transition"
-                >
-                  Register
-                </Link>
-                <Link
-                  to="/admin/login"
-                  className="text-slate-400 hover:text-emerald-400 p-1.5 rounded-lg transition"
-                  title="Admin Portal"
-                >
-                  <ShieldAlert className="w-4 h-4" />
-                </Link>
+
+              {/* Desktop Right Actions */}
+              <div className="hidden md:flex items-center gap-3">
+                {isAuthenticated ? (
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <div className="text-xs font-semibold text-[#1E293B]">
+                        {user?.name || 'User'}
+                      </div>
+                      <div className="text-[10px] text-[#0F766E] capitalize font-medium">
+                        Student
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#475569] hover:text-rose-600 bg-[#F5F8F4] hover:bg-rose-50 rounded-lg border border-[#B8D8CF] hover:border-rose-200 transition cursor-pointer"
+                      title="Logout"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to="/login"
+                      className="px-3.5 py-1.5 text-xs font-medium text-[#0F766E] bg-[#EAF3ED] hover:bg-[#DCEAE3] rounded-lg border border-[#B8D8CF] transition"
+                    >
+                      Student Login
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="px-3.5 py-1.5 text-xs font-medium text-white bg-[#0F766E] hover:bg-[#134E4A] rounded-lg shadow-xs transition"
+                    >
+                      Register
+                    </Link>
+                    <Link
+                      to="/admin/login"
+                      className="text-[#475569] hover:text-[#0F766E] p-1.5 rounded-lg transition"
+                      title="Admin Portal"
+                    >
+                      <ShieldAlert className="w-4 h-4" />
+                    </Link>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              className="p-2 rounded-lg text-[#475569] hover:text-[#0F766E] hover:bg-[#EAF3ED]"
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -158,105 +169,135 @@ export const Navbar = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-800 bg-slate-900 px-4 pt-3 pb-6 space-y-2">
-          <Link
-            to="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800"
-          >
-            Home
-          </Link>
-          <Link
-            to="/catalogue"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800"
-          >
-            Syllabus Catalogue
-          </Link>
-
-          {isAdmin && (
-            <div className="pt-2 border-t border-slate-800 space-y-1">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider px-3">
-                Admin Management
-              </span>
+        <div className="md:hidden border-t border-[#B8D8CF] bg-white px-4 pt-3 pb-6 space-y-2">
+          {isAdmin ? (
+            /* ADMIN MOBILE DRAWER: Exactly 5 options: Home, Dashboard, Syllabus, Premium, Logout */
+            <div className="space-y-1">
+              <div className="text-[10px] font-semibold text-[#0F766E] uppercase tracking-wider px-3 pb-1">
+                Admin Console
+              </div>
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
+              >
+                1. Home
+              </Link>
               <Link
                 to="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-emerald-400 hover:bg-slate-800"
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
               >
-                Dashboard Overview
+                2. Dashboard
               </Link>
               <Link
                 to="/admin/papers"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800"
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
               >
-                Manage Papers
+                3. Syllabus
               </Link>
               <Link
-                to="/admin/chapters"
+                to="/admin/premium"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800"
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
               >
-                Manage Chapters
+                4. Premium
               </Link>
-              <Link
-                to="/admin/topics"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800"
-              >
-                Manage Topics
-              </Link>
+              <div className="pt-2 border-t border-[#B8D8CF]">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>5. Logout ({user?.name || 'Admin'})</span>
+                </button>
+              </div>
             </div>
-          )}
-
-          {isAuthenticated && !isAdmin && (
-            <Link
-              to="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800"
-            >
-              My Profile
-            </Link>
-          )}
-
-          <div className="pt-4 border-t border-slate-800 flex flex-col gap-2">
-            {isAuthenticated ? (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  handleLogout();
-                }}
-                className="w-full text-center py-2 text-sm font-medium text-rose-400 bg-rose-950/40 rounded-lg border border-rose-900/60"
+          ) : (
+            /* STUDENT / PUBLIC MOBILE DRAWER */
+            <>
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
               >
-                Logout ({user?.name})
-              </button>
-            ) : (
-              <>
+                Home
+              </Link>
+              <Link
+                to="/catalogue"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
+              >
+                Syllabus Catalogue
+              </Link>
+              <Link
+                to="/challenges"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
+              >
+                Weekly Challenges
+              </Link>
+              <Link
+                to="/premium"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED] hover:text-[#0F766E]"
+              >
+                Premium Plan
+              </Link>
+
+              {isAuthenticated && (
                 <Link
-                  to="/login"
+                  to="/profile"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-sm font-medium text-slate-200 bg-slate-800 rounded-lg border border-slate-700"
+                  className="block px-3 py-2 rounded-lg text-sm font-medium text-[#475569] hover:bg-[#EAF3ED]"
                 >
-                  Student Login
+                  My Profile
                 </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg"
-                >
-                  Student Registration
-                </Link>
-                <Link
-                  to="/admin/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-1.5 text-xs text-slate-400 hover:text-emerald-400"
-                >
-                  Admin Portal Login
-                </Link>
-              </>
-            )}
-          </div>
+              )}
+
+              <div className="pt-4 border-t border-[#B8D8CF] flex flex-col gap-2">
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full text-center py-2 text-sm font-medium text-rose-600 bg-rose-50 rounded-lg border border-rose-200"
+                  >
+                    Logout ({user?.name})
+                  </button>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full text-center py-2 text-sm font-medium text-[#0F766E] bg-[#EAF3ED] rounded-lg border border-[#B8D8CF]"
+                    >
+                      Student Login
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full text-center py-2 text-sm font-medium text-white bg-[#0F766E] rounded-lg"
+                    >
+                      Student Registration
+                    </Link>
+                    <Link
+                      to="/admin/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full text-center py-1.5 text-xs text-[#475569] hover:text-[#0F766E]"
+                    >
+                      Admin Portal Login
+                    </Link>
+                  </>
+                )}
+              </div>
+            </>
+          )}
         </div>
       )}
     </nav>

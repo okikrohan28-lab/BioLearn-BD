@@ -13,7 +13,7 @@ import {
   CheckCircle,
   AlertCircle,
   X,
-  Filter,
+  Bookmark,
 } from 'lucide-react';
 
 export const ManageTopicsPage = () => {
@@ -86,6 +86,11 @@ export const ManageTopicsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.chapter_id) {
+      setError('Please select an associated chapter.');
+      return;
+    }
+
     setSubmitting(true);
     setError('');
     setNotification('');
@@ -93,156 +98,159 @@ export const ManageTopicsPage = () => {
     try {
       if (editingTopic) {
         await updateTopic(editingTopic._id, formData);
-        setNotification(`Topic ${formData.topic_no} updated successfully.`);
+        setNotification(`Topic ${formData.topic_no}: "${formData.title}" updated successfully.`);
       } else {
         await createTopic(formData);
-        setNotification(`Topic ${formData.topic_no} created successfully.`);
+        setNotification(`Topic ${formData.topic_no}: "${formData.title}" created successfully.`);
       }
       setIsModalOpen(false);
       fetchData();
     } catch (err) {
-      setError(err.message || 'Failed to save topic');
+      setError(err.response?.data?.message || err.message || 'Failed to save topic.');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (topic) => {
-    if (!window.confirm(`Delete Topic ${topic.topic_no}: "${topic.title}"?`)) {
-      return;
-    }
+    if (!window.confirm(`Are you sure you want to delete Topic ${topic.topic_no}: "${topic.title}"?`)) return;
 
+    setError('');
+    setNotification('');
     try {
       await deleteTopic(topic._id);
-      setNotification(`Topic ${topic.topic_no} deleted.`);
+      setNotification(`Topic ${topic.topic_no} deleted successfully.`);
       fetchData();
     } catch (err) {
-      setError(err.message || 'Failed to delete topic.');
+      setError(err.response?.data?.message || err.message || 'Failed to delete topic.');
     }
   };
 
   return (
-    <div className="space-y-6 py-6 max-w-7xl mx-auto px-4">
+    <div className="space-y-6 py-6 max-w-7xl mx-auto px-4" style={{ color: '#1E293B' }}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="border-b pb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ borderColor: '#B8D8CF' }}>
         <div>
-          <h1 className="text-2xl font-bold text-white">Manage Topics</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Organize individual syllabus topics under chapters with strictly enforced topic numbers.
+          <div
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold mb-2"
+            style={{ backgroundColor: '#DCEAE3', color: '#0F766E' }}
+          >
+            <Bookmark className="w-3.5 h-3.5" />
+            <span>Curriculum Hierarchy (Level 3)</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+            Manage Biology Topics
+          </h1>
+          <p className="text-xs sm:text-sm mt-1" style={{ color: '#475569' }}>
+            Attach granular sub-lessons to chapters with unique topic sequences.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Chapter filter */}
-          <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-xs">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
-            <select
-              value={selectedChapterFilter}
-              onChange={(e) => setSelectedChapterFilter(e.target.value)}
-              className="bg-transparent text-white focus:outline-none max-w-xs truncate"
-            >
-              <option value="">All Chapters</option>
-              {chapters.map((ch) => (
-                <option key={ch._id} value={ch._id}>
-                  Ch {ch.chapter_no}: {ch.title}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <button
-            onClick={openCreateModal}
-            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950 transition cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            Add Topic
-          </button>
-        </div>
+        <button
+          onClick={openCreateModal}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs text-white transition shadow-sm cursor-pointer hover:opacity-95"
+          style={{ backgroundColor: '#0F766E' }}
+        >
+          <Plus className="w-4 h-4" />
+          <span>Add New Topic</span>
+        </button>
       </div>
 
       {/* Notifications */}
       {notification && (
-        <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center justify-between">
+        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 shrink-0" />
+            <CheckCircle className="w-4 h-4 shrink-0 text-emerald-600" />
             <span>{notification}</span>
           </div>
-          <button onClick={() => setNotification('')} className="text-emerald-400 hover:text-white">
+          <button onClick={() => setNotification('')} className="text-emerald-700 hover:text-emerald-900">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {error && (
-        <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center justify-between">
+        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
             <span>{error}</span>
           </div>
-          <button onClick={() => setError('')} className="text-rose-400 hover:text-white">
+          <button onClick={() => setError('')} className="text-rose-700 hover:text-rose-900">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Topics Table */}
+      {/* Filter by Chapter */}
+      <div className="p-4 rounded-2xl border shadow-sm flex items-center gap-3" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
+        <span className="text-xs font-bold text-[#134E4A] shrink-0">Filter by Chapter:</span>
+        <select
+          value={selectedChapterFilter}
+          onChange={(e) => setSelectedChapterFilter(e.target.value)}
+          className="px-3.5 py-1.5 text-xs rounded-xl border bg-white focus:outline-none"
+          style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+        >
+          <option value="">All Chapters ({chapters.length})</option>
+          {chapters.map((c) => (
+            <option key={c._id} value={c._id}>
+              Ch. {c.chapter_no}: {c.title}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Table */}
       {loading ? (
-        <div className="py-12 text-center text-xs text-slate-400">Loading topics...</div>
+        <div className="py-16 text-center text-xs" style={{ color: '#475569' }}>Loading topics...</div>
       ) : topics.length === 0 ? (
-        <div className="p-8 text-center rounded-xl bg-slate-800/40 border border-slate-800 text-slate-400 text-xs">
-          No topics found for this selection. Click &quot;Add Topic&quot; above to create one.
+        <div className="p-12 text-center rounded-2xl border text-xs space-y-2" style={{ background: '#F5F8F4', borderColor: '#B8D8CF', color: '#475569' }}>
+          No topics found for this selection. Click &quot;Add New Topic&quot; above.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-850/60 shadow">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900 border-b border-slate-800 text-[11px] text-slate-400 uppercase tracking-wider">
+        <div className="overflow-x-auto rounded-2xl border shadow-sm" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
+          <table className="w-full text-left text-xs" style={{ color: '#1E293B' }}>
+            <thead className="border-b text-[11px] uppercase tracking-wider font-bold" style={{ backgroundColor: '#DCEAE3', borderColor: '#B8D8CF', color: '#134E4A' }}>
               <tr>
-                <th className="px-5 py-3.5">#</th>
+                <th className="px-5 py-3.5">Topic No.</th>
                 <th className="px-5 py-3.5">Topic Title</th>
                 <th className="px-5 py-3.5">Associated Chapter</th>
                 <th className="px-5 py-3.5">Status</th>
                 <th className="px-5 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y" style={{ borderColor: '#B8D8CF' }}>
               {topics.map((t) => (
-                <tr key={t._id} className="hover:bg-slate-800/40 transition">
-                  <td className="px-5 py-3.5 font-bold text-cyan-400">
-                    {t.topic_no}
-                  </td>
-                  <td className="px-5 py-3.5 font-medium text-white">
+                <tr key={t._id} className="hover:bg-white/60 transition">
+                  <td className="px-5 py-3.5 font-bold text-[#0F766E]">{t.topic_no}</td>
+                  <td className="px-5 py-3.5 font-bold" style={{ color: '#134E4A' }}>
                     <div>{t.title}</div>
-                    {t.description && (
-                      <div className="text-[11px] text-slate-400">{t.description}</div>
-                    )}
+                    {t.description && <div className="text-[11px] font-normal text-slate-500 mt-0.5">{t.description}</div>}
                   </td>
-                  <td className="px-5 py-3.5 text-slate-300">
-                    {t.chapter_id?.title
-                      ? `Ch ${t.chapter_id.chapter_no}: ${t.chapter_id.title}`
-                      : 'Unknown Chapter'}
+                  <td className="px-5 py-3.5 text-slate-700">
+                    {t.chapter_id?.title ? `Ch. ${t.chapter_id.chapter_no}: ${t.chapter_id.title}` : 'Unknown Chapter'}
                   </td>
                   <td className="px-5 py-3.5">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] capitalize ${
-                        t.status === 'published'
-                          ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
-                          : 'bg-amber-950/60 text-amber-300 border border-amber-800/60'
+                      className={`px-2 py-0.5 rounded-full text-[10px] capitalize font-medium ${
+                        t.status === 'published' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700'
                       }`}
                     >
                       {t.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-right space-x-2">
+                  <td className="px-5 py-3.5 text-right space-x-1.5">
                     <button
                       onClick={() => openEditModal(t)}
-                      className="p-1.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer"
+                      className="p-1.5 rounded-lg border text-slate-600 hover:text-[#0F766E] hover:bg-white transition cursor-pointer"
+                      style={{ borderColor: '#B8D8CF' }}
                       title="Edit Topic"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDelete(t)}
-                      className="p-1.5 rounded hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 transition cursor-pointer"
+                      className="p-1.5 rounded-lg border text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                      style={{ borderColor: '#FECACA' }}
                       title="Delete Topic"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -255,65 +263,68 @@ export const ManageTopicsPage = () => {
         </div>
       )}
 
-      {/* Modal Dialog */}
+      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-          <div className="max-w-lg w-full bg-slate-850 border border-slate-700 rounded-2xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
-              <h3 className="text-base font-bold text-white">
-                {editingTopic ? 'Edit Topic' : 'Add New Topic'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div
+            className="w-full max-w-md rounded-3xl p-6 sm:p-8 space-y-5 border shadow-xl"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: '#B8D8CF' }}>
+              <h3 className="text-lg font-bold" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+                {editingTopic ? 'Edit Topic Details' : 'Add New Topic'}
               </h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white"
-              >
+              <button onClick={() => setIsModalOpen(false)} className="p-1 rounded-lg text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Associated Chapter <span className="text-rose-400">*</span>
+                <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+                  Parent Chapter *
                 </label>
                 <select
                   required
                   value={formData.chapter_id}
                   onChange={(e) => setFormData({ ...formData, chapter_id: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+                  style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
                 >
-                  <option value="">Select Chapter...</option>
-                  {chapters.map((ch) => (
-                    <option key={ch._id} value={ch._id}>
-                      Ch {ch.chapter_no}: {ch.title}
+                  <option value="">-- Choose Chapter --</option>
+                  {chapters.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      Ch. {c.chapter_no}: {c.title}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-1">
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Topic # <span className="text-rose-400">*</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+                    Topic Number *
                   </label>
                   <input
                     type="number"
-                    min="1"
+                    min={1}
                     required
                     value={formData.topic_no}
                     onChange={(e) => setFormData({ ...formData, topic_no: parseInt(e.target.value, 10) || 1 })}
-                    className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none"
+                    style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
                   />
                 </div>
 
-                <div className="col-span-2">
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <div>
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
                     Status
                   </label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none"
+                    style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
                   >
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
@@ -323,44 +334,48 @@ export const ManageTopicsPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Topic Title <span className="text-rose-400">*</span>
+                <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+                  Topic Title *
                 </label>
                 <input
                   type="text"
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g. Structure of DNA & RNA"
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
+                  placeholder="e.g. Mitochondria & Cellular Respiration"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+                  style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Description
+                <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+                  Description (Optional)
                 </label>
                 <textarea
-                  rows="3"
+                  rows={2}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Summary of this topic..."
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
-                ></textarea>
+                  placeholder="Brief summary of topic content..."
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none"
+                  style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+                />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-700/80">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t" style={{ borderColor: '#B8D8CF' }}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold border transition hover:bg-slate-100"
+                  style={{ borderColor: '#B8D8CF', color: '#475569' }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white transition shadow-sm cursor-pointer disabled:opacity-50"
+                  style={{ backgroundColor: '#0F766E' }}
                 >
                   {submitting ? 'Saving...' : editingTopic ? 'Update Topic' : 'Create Topic'}
                 </button>

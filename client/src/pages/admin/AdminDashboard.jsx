@@ -1,18 +1,33 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getPapers, getChapters, getTopics } from '../../services/contentService';
+import {
+  getPapers,
+  getChapters,
+  getTopics,
+  getQuizzes,
+  getChallenges,
+} from '../../services/contentService';
 import {
   Layers,
   FileText,
   Bookmark,
   ShieldCheck,
   PlusCircle,
-  ExternalLink,
   AlertCircle,
+  ClipboardList,
+  Trophy,
+  ArrowRight,
+  Crown,
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
-  const [stats, setStats] = useState({ papers: 0, chapters: 0, topics: 0 });
+  const [stats, setStats] = useState({
+    papers: 0,
+    chapters: 0,
+    topics: 0,
+    quizzes: 0,
+    challenges: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -20,16 +35,20 @@ export const AdminDashboard = () => {
     let ignore = false;
     const loadStats = async () => {
       try {
-        const [papersRes, chaptersRes, topicsRes] = await Promise.all([
+        const [papersRes, chaptersRes, topicsRes, quizzesRes, challengesRes] = await Promise.all([
           getPapers(),
           getChapters(),
           getTopics(),
+          getQuizzes({}),
+          getChallenges(),
         ]);
         if (!ignore) {
           setStats({
             papers: papersRes.data?.length || 0,
             chapters: chaptersRes.data?.length || 0,
             topics: topicsRes.data?.length || 0,
+            quizzes: quizzesRes.data?.length || 0,
+            challenges: challengesRes.data?.length || 0,
           });
         }
       } catch (err) {
@@ -48,160 +67,256 @@ export const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="space-y-8 py-6 max-w-7xl mx-auto px-4">
+    <div className="space-y-8 py-6 max-w-7xl mx-auto px-4" style={{ color: '#1E293B' }}>
       {/* Header */}
-      <div className="border-b border-slate-800 pb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="border-b pb-6" style={{ borderColor: '#B8D8CF' }}>
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-2">
+          <div
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold mb-2"
+            style={{ backgroundColor: '#DCEAE3', color: '#0F766E' }}
+          >
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Administrator Control Center</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            Curriculum Management Dashboard
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+            Curriculum & Assessment Dashboard
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Maintain Biology 1st and 2nd Paper content, chapters, and topic taxonomies.
+          <p className="text-xs sm:text-sm mt-1" style={{ color: '#475569' }}>
+            Maintain Biology 1st & 2nd Paper syllabus hierarchy, study resources, quizzes, and weekly challenges.
           </p>
         </div>
-
-        <Link
-          to="/catalogue"
-          target="_blank"
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
-        >
-          <span>Preview Student Catalogue</span>
-          <ExternalLink className="w-3.5 h-3.5" />
-        </Link>
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 shrink-0" />
+        <div className="p-4 rounded-xl text-xs flex items-center gap-2 bg-rose-50 text-rose-800 border border-rose-200">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Stats Bento Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {/* Papers Stat */}
-        <div className="p-6 rounded-2xl bg-slate-800/60 border border-slate-700/80 space-y-4">
+        <div className="p-5 rounded-2xl border space-y-3 shadow-2xs" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Biology Papers
-            </span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-              <Layers className="w-5 h-5" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#475569]">Papers</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+              <Layers className="w-4 h-4" />
             </div>
           </div>
-          <div>
-            <div className="text-3xl font-extrabold text-white">
-              {loading ? '...' : stats.papers}
-            </div>
-            <p className="text-xs text-slate-400 mt-1">Botany and Zoology syllabi</p>
+          <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+            {loading ? '...' : stats.papers}
           </div>
-          <div className="pt-2 border-t border-slate-750 flex items-center justify-between">
-            <Link
-              to="/admin/papers"
-              className="text-xs font-medium text-emerald-400 hover:underline flex items-center gap-1"
-            >
-              Manage Papers &rarr;
-            </Link>
-          </div>
+          <Link to="/admin/papers" className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1">
+            Manage &rarr;
+          </Link>
         </div>
 
         {/* Chapters Stat */}
-        <div className="p-6 rounded-2xl bg-slate-800/60 border border-slate-700/80 space-y-4">
+        <div className="p-5 rounded-2xl border space-y-3 shadow-2xs" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Chapters
-            </span>
-            <div className="w-9 h-9 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center">
-              <FileText className="w-5 h-5" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#475569]">Chapters</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+              <FileText className="w-4 h-4" />
             </div>
           </div>
-          <div>
-            <div className="text-3xl font-extrabold text-white">
-              {loading ? '...' : stats.chapters}
-            </div>
-            <p className="text-xs text-slate-400 mt-1">Unique chapter numbers enforced per paper</p>
+          <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+            {loading ? '...' : stats.chapters}
           </div>
-          <div className="pt-2 border-t border-slate-750 flex items-center justify-between">
-            <Link
-              to="/admin/chapters"
-              className="text-xs font-medium text-teal-400 hover:underline flex items-center gap-1"
-            >
-              Manage Chapters &rarr;
-            </Link>
-          </div>
+          <Link to="/admin/chapters" className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1">
+            Manage &rarr;
+          </Link>
         </div>
 
         {/* Topics Stat */}
-        <div className="p-6 rounded-2xl bg-slate-800/60 border border-slate-700/80 space-y-4">
+        <div className="p-5 rounded-2xl border space-y-3 shadow-2xs" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Topics
-            </span>
-            <div className="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-              <Bookmark className="w-5 h-5" />
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#475569]">Topics</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+              <Bookmark className="w-4 h-4" />
             </div>
           </div>
-          <div>
-            <div className="text-3xl font-extrabold text-white">
-              {loading ? '...' : stats.topics}
+          <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+            {loading ? '...' : stats.topics}
+          </div>
+          <Link to="/admin/topics" className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1">
+            Manage &rarr;
+          </Link>
+        </div>
+
+        {/* Quizzes Stat */}
+        <div className="p-5 rounded-2xl border space-y-3 shadow-2xs" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#475569]">Quizzes</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+              <ClipboardList className="w-4 h-4" />
             </div>
-            <p className="text-xs text-slate-400 mt-1">Structured learning topics organized under chapters</p>
           </div>
-          <div className="pt-2 border-t border-slate-750 flex items-center justify-between">
-            <Link
-              to="/admin/topics"
-              className="text-xs font-medium text-cyan-400 hover:underline flex items-center gap-1"
-            >
-              Manage Topics &rarr;
-            </Link>
+          <div className="text-2xl sm:text-3xl font-extrabold" style={{ color: '#0F766E', fontFamily: 'Poppins, sans-serif' }}>
+            {loading ? '...' : stats.quizzes}
           </div>
+          <Link to="/admin/quizzes" className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1">
+            Manage &rarr;
+          </Link>
+        </div>
+
+        {/* Challenges Stat */}
+        <div className="p-5 rounded-2xl border space-y-3 shadow-2xs col-span-2 md:col-span-1" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#475569]">Weekly Arenas</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-amber-700 bg-amber-100">
+              <Trophy className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl sm:text-3xl font-extrabold text-amber-700" style={{ fontFamily: 'Poppins, sans-serif' }}>
+            {loading ? '...' : stats.challenges}
+          </div>
+          <Link to="/admin/challenges" className="text-xs font-semibold text-amber-700 hover:underline flex items-center gap-1">
+            Manage &rarr;
+          </Link>
         </div>
       </div>
 
       {/* Quick Actions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-        <Link
-          to="/admin/papers"
-          className="p-5 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700/80 transition flex items-center gap-4 cursor-pointer"
-        >
-          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
-            <PlusCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-sm font-bold text-white">Add or Edit Paper</h4>
-            <p className="text-xs text-slate-400">Configure title, subject, and access level</p>
-          </div>
-        </Link>
+      <div className="space-y-3">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">
+          Administrative Workspaces
+        </h3>
 
-        <Link
-          to="/admin/chapters"
-          className="p-5 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700/80 transition flex items-center gap-4 cursor-pointer"
-        >
-          <div className="w-10 h-10 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center shrink-0">
-            <PlusCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-sm font-bold text-white">Add or Edit Chapter</h4>
-            <p className="text-xs text-slate-400">Organize chapters under specific papers</p>
-          </div>
-        </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link
+            to="/admin/papers"
+            className="p-5 rounded-2xl border transition flex items-center justify-between hover:shadow-xs group cursor-pointer"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+                <Layers className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#134E4A] group-hover:text-[#0F766E] transition">
+                  Manage Biology Papers
+                </h4>
+                <p className="text-xs text-[#475569]">Syllabus taxonomy for Paper 1 & 2</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#0F766E] group-hover:translate-x-1 transition" />
+          </Link>
 
-        <Link
-          to="/admin/topics"
-          className="p-5 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700/80 transition flex items-center gap-4 cursor-pointer"
-        >
-          <div className="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0">
-            <PlusCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <h4 className="text-sm font-bold text-white">Add or Edit Topic</h4>
-            <p className="text-xs text-slate-400">Break down chapters into measurable lessons</p>
-          </div>
-        </Link>
+          <Link
+            to="/admin/chapters"
+            className="p-5 rounded-2xl border transition flex items-center justify-between hover:shadow-xs group cursor-pointer"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#134E4A] group-hover:text-[#0F766E] transition">
+                  Manage Chapters
+                </h4>
+                <p className="text-xs text-[#475569]">Unique chapter sequencing per paper</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#0F766E] group-hover:translate-x-1 transition" />
+          </Link>
+
+          <Link
+            to="/admin/topics"
+            className="p-5 rounded-2xl border transition flex items-center justify-between hover:shadow-xs group cursor-pointer"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+                <Bookmark className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#134E4A] group-hover:text-[#0F766E] transition">
+                  Manage Topics
+                </h4>
+                <p className="text-xs text-[#475569]">Granular sub-lessons under chapters</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#0F766E] group-hover:translate-x-1 transition" />
+          </Link>
+
+          <Link
+            to="/admin/resources"
+            className="p-5 rounded-2xl border transition flex items-center justify-between hover:shadow-xs group cursor-pointer"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+                <PlusCircle className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#134E4A] group-hover:text-[#0F766E] transition">
+                  Learning Resources
+                </h4>
+                <p className="text-xs text-[#475569]">Notes, diagrams & YouTube lessons</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#0F766E] group-hover:translate-x-1 transition" />
+          </Link>
+
+          <Link
+            to="/admin/quizzes"
+            className="p-5 rounded-2xl border transition flex items-center justify-between hover:shadow-xs group cursor-pointer"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-[#0F766E]" style={{ backgroundColor: '#DCEAE3' }}>
+                <ClipboardList className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#134E4A] group-hover:text-[#0F766E] transition">
+                  Quizzes & Questions
+                </h4>
+                <p className="text-xs text-[#475569]">MCQs, answer keys & mark schemes</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#0F766E] group-hover:translate-x-1 transition" />
+          </Link>
+
+          <Link
+            to="/admin/challenges"
+            className="p-5 rounded-2xl border transition flex items-center justify-between hover:shadow-xs group cursor-pointer"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-amber-700 bg-amber-100">
+                <Trophy className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#134E4A] group-hover:text-[#0F766E] transition">
+                  Weekly Challenges
+                </h4>
+                <p className="text-xs text-[#475569]">Schedule timed competitive tests</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#0F766E] group-hover:translate-x-1 transition" />
+          </Link>
+
+          <Link
+            to="/admin/premium"
+            className="p-5 rounded-2xl border transition flex items-center justify-between hover:shadow-xs group cursor-pointer"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-amber-700 bg-amber-100">
+                <Crown className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-[#134E4A] group-hover:text-[#0F766E] transition">
+                  Premium Subscribers
+                </h4>
+                <p className="text-xs text-[#475569]">Student subscriptions & payment records</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#0F766E] group-hover:translate-x-1 transition" />
+          </Link>
+        </div>
       </div>
     </div>
   );

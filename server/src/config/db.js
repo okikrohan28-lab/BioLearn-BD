@@ -1,20 +1,25 @@
+const dns = require('dns');
+
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 const mongoose = require('mongoose');
 const env = require('./env');
 
 const connectDB = async () => {
   if (!env.MONGODB_URI) {
-    console.warn('⚠️ MONGODB_URI is not configured. Database connection skipped.');
-    return;
+    throw new Error('MONGODB_URI is not configured');
   }
 
   try {
-    const conn = await mongoose.connect(env.MONGODB_URI);
+    const conn = await mongoose.connect(env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 15000,
+      connectTimeoutMS: 15000,
+    });
+
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    return conn;
   } catch (error) {
-    console.error(`❌ MongoDB Connection Error: ${error.message}`);
-    if (env.NODE_ENV === 'production') {
-      process.exit(1);
-    }
+    console.error('❌ MongoDB Connection Error:', error.message);
+    throw error;
   }
 };
 

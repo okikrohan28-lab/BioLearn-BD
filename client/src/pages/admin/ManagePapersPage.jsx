@@ -7,6 +7,7 @@ import {
   CheckCircle,
   AlertCircle,
   X,
+  Layers,
 } from 'lucide-react';
 
 export const ManagePapersPage = () => {
@@ -85,66 +86,76 @@ export const ManagePapersPage = () => {
       setIsModalOpen(false);
       fetchPapers();
     } catch (err) {
-      setError(err.message || 'Failed to save paper');
+      setError(err.message || 'Operation failed');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (paper) => {
-    if (!window.confirm(`Are you sure you want to delete "${paper.title}"?`)) {
-      return;
-    }
+    if (!window.confirm(`Are you sure you want to delete "${paper.title}"?`)) return;
 
+    setError('');
+    setNotification('');
     try {
       await deletePaper(paper._id);
-      setNotification(`Paper "${paper.title}" deleted.`);
+      setNotification(`Paper "${paper.title}" deleted successfully.`);
       fetchPapers();
     } catch (err) {
-      setError(err.message || 'Cannot delete paper with dependent chapters.');
+      setError(err.message || 'Failed to delete paper');
     }
   };
 
   return (
-    <div className="space-y-6 py-6 max-w-7xl mx-auto px-4">
+    <div className="space-y-6 py-6 max-w-7xl mx-auto px-4" style={{ color: '#1E293B' }}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="border-b pb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ borderColor: '#B8D8CF' }}>
         <div>
-          <h1 className="text-2xl font-bold text-white">Manage Biology Papers</h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Create, configure access levels, and maintain Biology 1st and 2nd Paper records.
+          <div
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold mb-2"
+            style={{ backgroundColor: '#DCEAE3', color: '#0F766E' }}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Curriculum Hierarchy (Level 1)</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+            Manage Biology Papers
+          </h1>
+          <p className="text-xs sm:text-sm mt-1" style={{ color: '#475569' }}>
+            Create and maintain Botany (Paper 1) and Zoology (Paper 2) syllabi and access tiers.
           </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-950 transition cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs text-white transition shadow-sm cursor-pointer hover:opacity-95"
+          style={{ backgroundColor: '#0F766E' }}
         >
           <Plus className="w-4 h-4" />
-          Add New Paper
+          <span>Add New Paper</span>
         </button>
       </div>
 
       {/* Notifications */}
       {notification && (
-        <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center justify-between">
+        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 shrink-0" />
+            <CheckCircle className="w-4 h-4 shrink-0 text-emerald-600" />
             <span>{notification}</span>
           </div>
-          <button onClick={() => setNotification('')} className="text-emerald-400 hover:text-white">
+          <button onClick={() => setNotification('')} className="text-emerald-700 hover:text-emerald-900">
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {error && (
-        <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center justify-between">
+        <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
             <span>{error}</span>
           </div>
-          <button onClick={() => setError('')} className="text-rose-400 hover:text-white">
+          <button onClick={() => setError('')} className="text-rose-700 hover:text-rose-900">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -152,15 +163,15 @@ export const ManagePapersPage = () => {
 
       {/* Table */}
       {loading ? (
-        <div className="py-12 text-center text-xs text-slate-400">Loading papers...</div>
+        <div className="py-16 text-center text-xs" style={{ color: '#475569' }}>Loading papers...</div>
       ) : papers.length === 0 ? (
-        <div className="p-8 text-center rounded-xl bg-slate-800/40 border border-slate-800 text-slate-400 text-xs">
+        <div className="p-12 text-center rounded-2xl border text-xs space-y-2" style={{ background: '#F5F8F4', borderColor: '#B8D8CF', color: '#475569' }}>
           No papers found. Click &quot;Add New Paper&quot; above to create one.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-850/60 shadow">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900 border-b border-slate-800 text-[11px] text-slate-400 uppercase tracking-wider">
+        <div className="overflow-x-auto rounded-2xl border shadow-sm" style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}>
+          <table className="w-full text-left text-xs" style={{ color: '#1E293B' }}>
+            <thead className="border-b text-[11px] uppercase tracking-wider font-bold" style={{ backgroundColor: '#DCEAE3', borderColor: '#B8D8CF', color: '#134E4A' }}>
               <tr>
                 <th className="px-5 py-3.5">Title</th>
                 <th className="px-5 py-3.5">Subject</th>
@@ -169,20 +180,20 @@ export const ManagePapersPage = () => {
                 <th className="px-5 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y" style={{ borderColor: '#B8D8CF' }}>
               {papers.map((p) => (
-                <tr key={p._id} className="hover:bg-slate-800/40 transition">
-                  <td className="px-5 py-3.5 font-medium text-white">
+                <tr key={p._id} className="hover:bg-white/60 transition">
+                  <td className="px-5 py-3.5 font-bold" style={{ color: '#134E4A' }}>
                     <div>{p.title}</div>
-                    {p.description && <div className="text-[11px] text-slate-400">{p.description}</div>}
+                    {p.description && <div className="text-[11px] font-normal text-slate-500 mt-0.5">{p.description}</div>}
                   </td>
                   <td className="px-5 py-3.5">{p.subject}</td>
                   <td className="px-5 py-3.5">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] uppercase font-semibold ${
+                      className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold ${
                         p.access_level === 'premium'
-                          ? 'bg-amber-950 text-amber-400 border border-amber-800'
-                          : 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                          ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                          : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                       }`}
                     >
                       {p.access_level}
@@ -190,28 +201,28 @@ export const ManagePapersPage = () => {
                   </td>
                   <td className="px-5 py-3.5">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] capitalize ${
+                      className={`px-2 py-0.5 rounded-full text-[10px] capitalize font-medium ${
                         p.status === 'published'
-                          ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60'
-                          : p.status === 'draft'
-                          ? 'bg-amber-950/60 text-amber-300 border border-amber-800/60'
-                          : 'bg-slate-800 text-slate-400'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-slate-200 text-slate-700'
                       }`}
                     >
                       {p.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-right space-x-2">
+                  <td className="px-5 py-3.5 text-right space-x-1.5">
                     <button
                       onClick={() => openEditModal(p)}
-                      className="p-1.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer"
+                      className="p-1.5 rounded-lg border text-slate-600 hover:text-[#0F766E] hover:bg-white transition cursor-pointer"
+                      style={{ borderColor: '#B8D8CF' }}
                       title="Edit Paper"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDelete(p)}
-                      className="p-1.5 rounded hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 transition cursor-pointer"
+                      className="p-1.5 rounded-lg border text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                      style={{ borderColor: '#FECACA' }}
                       title="Delete Paper"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -224,26 +235,26 @@ export const ManagePapersPage = () => {
         </div>
       )}
 
-      {/* Modal Dialog */}
+      {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-          <div className="max-w-lg w-full bg-slate-850 border border-slate-700 rounded-2xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
-              <h3 className="text-base font-bold text-white">
-                {editingPaper ? 'Edit Paper' : 'Create New Paper'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div
+            className="w-full max-w-md rounded-3xl p-6 sm:p-8 space-y-5 border shadow-xl"
+            style={{ background: '#F5F8F4', borderColor: '#B8D8CF' }}
+          >
+            <div className="flex items-center justify-between border-b pb-4" style={{ borderColor: '#B8D8CF' }}>
+              <h3 className="text-lg font-bold" style={{ color: '#134E4A', fontFamily: 'Poppins, sans-serif' }}>
+                {editingPaper ? 'Edit Biology Paper' : 'Create Biology Paper'}
               </h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white"
-              >
+              <button onClick={() => setIsModalOpen(false)} className="p-1 rounded-lg text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Paper Title <span className="text-rose-400">*</span>
+                <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+                  Paper Title *
                 </label>
                 <input
                   type="text"
@@ -251,33 +262,49 @@ export const ManagePapersPage = () => {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g. Biology 1st Paper (Botany)"
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
+                  style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none"
+                  style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
                     Access Level
                   </label>
                   <select
                     value={formData.access_level}
                     onChange={(e) => setFormData({ ...formData, access_level: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 text-xs rounded-xl border bg-white focus:outline-none"
+                    style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
                   >
-                    <option value="free">Free</option>
-                    <option value="premium">Premium</option>
+                    <option value="free">Free Access</option>
+                    <option value="premium">Premium Only</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
                     Status
                   </label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 text-xs rounded-xl border bg-white focus:outline-none"
+                    style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
                   >
                     <option value="published">Published</option>
                     <option value="draft">Draft</option>
@@ -287,30 +314,33 @@ export const ManagePapersPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Description
+                <label className="block text-xs font-semibold mb-1" style={{ color: '#475569' }}>
+                  Description (Optional)
                 </label>
                 <textarea
-                  rows="3"
+                  rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Overview of this paper..."
-                  className="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:border-emerald-500"
-                ></textarea>
+                  placeholder="Overview of paper syllabus coverage..."
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border bg-white focus:outline-none"
+                  style={{ borderColor: '#B8D8CF', color: '#1E293B' }}
+                />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-700/80">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t" style={{ borderColor: '#B8D8CF' }}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold border transition hover:bg-slate-100"
+                  style={{ borderColor: '#B8D8CF', color: '#475569' }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white transition shadow-sm cursor-pointer disabled:opacity-50"
+                  style={{ backgroundColor: '#0F766E' }}
                 >
                   {submitting ? 'Saving...' : editingPaper ? 'Update Paper' : 'Create Paper'}
                 </button>
